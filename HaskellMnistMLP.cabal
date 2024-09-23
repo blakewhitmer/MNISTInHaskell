@@ -72,7 +72,10 @@ executable HaskellMnistMLP
                     filepath,
                     bytestring,
                     random,
-                    array
+                    array,
+                    vector,
+                    hmatrix,
+                    containers
 
     -- Directories containing source files.
     hs-source-dirs:   app

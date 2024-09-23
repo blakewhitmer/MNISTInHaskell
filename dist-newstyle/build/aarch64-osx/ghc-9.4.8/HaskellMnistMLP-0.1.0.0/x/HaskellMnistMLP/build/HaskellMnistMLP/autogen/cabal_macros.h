@@ -40,6 +40,16 @@
   (major1) == 0 && (major2) <  11 || \
   (major1) == 0 && (major2) == 11 && (minor) <= 5)
 #endif /* MIN_VERSION_bytestring */
+/* package containers-0.6.7 */
+#ifndef VERSION_containers
+#define VERSION_containers "0.6.7"
+#endif /* VERSION_containers */
+#ifndef MIN_VERSION_containers
+#define MIN_VERSION_containers(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  6 || \
+  (major1) == 0 && (major2) == 6 && (minor) <= 7)
+#endif /* MIN_VERSION_containers */
 /* package directory-1.3.7.1 */
 #ifndef VERSION_directory
 #define VERSION_directory "1.3.7.1"
@@ -60,6 +70,16 @@
   (major1) == 1 && (major2) <  4 || \
   (major1) == 1 && (major2) == 4 && (minor) <= 2)
 #endif /* MIN_VERSION_filepath */
+/* package hmatrix-0.20.2 */
+#ifndef VERSION_hmatrix
+#define VERSION_hmatrix "0.20.2"
+#endif /* VERSION_hmatrix */
+#ifndef MIN_VERSION_hmatrix
+#define MIN_VERSION_hmatrix(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  20 || \
+  (major1) == 0 && (major2) == 20 && (minor) <= 2)
+#endif /* MIN_VERSION_hmatrix */
 /* package random-1.2.1.2 */
 #ifndef VERSION_random
 #define VERSION_random "1.2.1.2"
@@ -70,6 +90,16 @@
   (major1) == 1 && (major2) <  2 || \
   (major1) == 1 && (major2) == 2 && (minor) <= 1)
 #endif /* MIN_VERSION_random */
+/* package vector-0.13.1.0 */
+#ifndef VERSION_vector
+#define VERSION_vector "0.13.1.0"
+#endif /* VERSION_vector */
+#ifndef MIN_VERSION_vector
+#define MIN_VERSION_vector(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  13 || \
+  (major1) == 0 && (major2) == 13 && (minor) <= 1)
+#endif /* MIN_VERSION_vector */
 
 /* tool gcc-15.0.0 */
 #ifndef TOOL_VERSION_gcc
