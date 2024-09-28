@@ -7,5 +7,10 @@
 			"path": "../../Downloads/archive"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"terminal.integrated.env.osx": {
+		  "LIBRARY_PATH": "/opt/homebrew/lib:/usr/lib:/usr/local/lib",
+		  "CPATH": "/opt/homebrew/include:/usr/include:/usr/local/include"
+		}
+	  }
 }

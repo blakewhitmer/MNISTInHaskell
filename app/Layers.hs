@@ -1,14 +1,16 @@
+module Layers where
+
 import Numeric.LinearAlgebra
-
-
-
-class Differentiable f where
-    pD :: f -> Double -> Double
 
 relu :: Double -> Double
 relu z
     | z < 0     = 0
     | otherwise = z
+
+reluDerivative :: Double -> Double
+reluDerivative z
+    | z < 0     = 0
+    | otherwise = 1
 
 reluMatrix :: Vector Double -> Vector Double
 reluMatrix = cmap relu
@@ -20,79 +22,103 @@ inputData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 inputVector :: Vector Double
 inputVector = fromList inputData
 
-newtype InputLabel = InputLabel Int
-inputLabel = 8
+type Weights = Matrix Double
+type Biases  = Vector Double
+type LayerOutput = Vector Double
 
-inputLabelToVector :: InputLabel -> Vector Double
-inputLabelToVector (InputLabel n) =
+oneHotEncoder :: Int -> Vector Double
+oneHotEncoder n =
     fromList [if i == n then 1.0 else 0.0 | i <- [0..9]] 
 
-initializeInputWeight :: Matrix Double
+initializeInputWeight :: Weights
 initializeInputWeight = uniformSample 42 128 (replicate 784 (-0.0357, 0.0357))
 
-initializeHiddenWeight :: Matrix Double
+initializeHiddenWeight :: Weights
 initializeHiddenWeight = uniformSample 42 10 (replicate 128 (-0.088, 0.088))
 
-initializeHiddenBias :: Vector Double
+initializeHiddenBias :: Biases
 initializeHiddenBias = konst 0 128
 
-initializeOutputBias :: Vector Double
+initializeOutputBias :: Biases
 initializeOutputBias = konst 0 10
 
-sigmoid :: Double -> Double
-sigmoid x = 1 / (1 + exp (-x))
+learningRate :: Double
+learningRate = 0.001
 
 softmax :: Vector Double -> Vector Double
 softmax v = let expV = exp v
                 sumExpV = sumElements expV
             in expV / scalar sumExpV 
 
-shape :: (Int, Int)
-shape = size initializeInputWeight
-
-feedForward :: Vector Double -> IO (Vector Double)
-feedForward input = do
-    -- Compute hidden layer input
-    let hiddenLayerInput  = (initializeInputWeight #> input) + initializeHiddenBias
-    putStrLn "\nHidden Layer Input:"
-    print hiddenLayerInput
-
-    -- Apply ReLU to hidden layer output
-    let hiddenLayerOutput = cmap relu hiddenLayerInput
-    putStrLn "\nHidden Layer Output (After ReLU):"
-    print hiddenLayerOutput
-
-    -- Compute output layer input
-    let outputLayerInput  = (initializeHiddenWeight #> hiddenLayerOutput) + initializeOutputBias
-    putStrLn "\nOutput Layer Input (Final Output):"
-    print outputLayerInput
-
-    let output = softmax outputLayerInput
-    print output
-
-    return output
 
 crossEntropyLoss :: Vector Double -> Vector Double -> Double
 crossEntropyLoss predicted oneHot =
     - sumElements (cmap log predicted * oneHot)
 
-main :: IO ()
-main = do
-    -- Perform a feedforward pass and print each step
-    output <- feedForward inputVector
-    putStrLn "\nFinal Output:"
-    print output
+shape :: (Int, Int)
+shape = size initializeInputWeight
 
-    let label = InputLabel 3  -- For example, the label is 3
-    let oneHotVector = inputLabelToVector label
-    putStrLn "One-hot encoded vector:"
-    print oneHotVector
+-- x is the input vector
 
-    let dotProduct = output <.> oneHotVector
-    print dotProduct
+feedForward :: (Vector Double, Weights, Weights, Biases, Biases) -> (Vector Double, Vector Double, Vector Double)
+feedForward (x, w1, w2, b1, b2) = (logits, a1, z1)
+    where
 
-    print (cmap log output)
+    z1  = (w1 #> x) + b1
 
-    let loss = crossEntropyLoss output oneHotVector
-    putStrLn "\nCross Entropy Loss:"
+    a1 = cmap relu z1
+
+    logits  = (w2 #> a1) + b2
+
+-- You don't actually need to pass the loss function
+calculateGradients :: (Vector Double, Vector Double, Weights, Weights, Vector Double, Vector Double, Vector Double) -> (Weights, Weights, Biases, Biases)
+calculateGradients (logits, oneHotEncoding, w1, w2, a1, z1, x) = (w1', w2', b1', b2')
+    where
+    delta2 :: Vector Double
+    delta1 :: Vector Double
+
+    delta2 = logits - oneHotEncoding
+    w2' = delta2 `outer` a1
+    b2' = delta2
+    delta1 = (tr w2 #> delta2) * cmap reluDerivative z1
+    w1' = delta1 `outer` x
+    b1' = delta1
+
+-- Stochastic Gradient Descent
+updateWeights ::(Double, Weights, Weights, Biases, Biases, Weights, Weights, Biases, Biases) -> (Weights, Weights, Biases, Biases)
+updateWeights (learningRate, w1, w2, b1, b2, w1', w2', b1', b2') = (neww1, neww2, newb1, newb2)
+    where
+    neww1 = w1 - scale learningRate w1'
+    neww2 = w2 - scale learningRate w2'
+    newb1 = b1 - scale learningRate b1'
+    newb2 = b2 - scale learningRate b2'
+
+
+-- Add learning rate
+stepNN :: (Vector Double, Int, Double, Weights, Weights, Biases, Biases) -> (Weights, Weights, Biases, Biases, Double)
+stepNN (x, label, learningRate, w1, w2, b1, b2) = (neww1, neww2, newb1, newb2, loss)
+    where
+    oneHotEncoding = oneHotEncoder label
+    (logits, a1, z1) = feedForward (x, w1, w2, b1, b2)
+    loss = crossEntropyLoss (softmax logits) oneHotEncoding
+    (w1', w2', b1', b2') = calculateGradients (logits, oneHotEncoding, w1, w2, a1, z1, x)
+    (neww1, neww2, newb1, newb2) = updateWeights (learningRate, w1, w2, b1, b2, w1', w2', b1', b2')
+
+-- feedForward
+-- crossEntropyLoss
+-- Backwards
+-- UpdateWeights
+
+
+grain :: IO ()
+grain = do
+
+    let label = 8
+    let (x, w1, w2, b1, b2) = (inputVector, initializeInputWeight, initializeHiddenWeight, initializeHiddenBias, initializeOutputBias)
+    let (neww1, neww2, newb1, newb2, loss) = stepNN (x, label, learningRate, w1, w2, b1, b2)
+
     print loss
+
+-- backwards pass. Hmm.
+-- The gradient of the first layer is.
+-- Logits - inputLabelToVector

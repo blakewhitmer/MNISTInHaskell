@@ -10,16 +10,6 @@
   (major1) == 0 && (major2) <  1 || \
   (major1) == 0 && (major2) == 1 && (minor) <= 0)
 #endif /* MIN_VERSION_HaskellMnistMLP */
-/* package array-0.5.4.0 */
-#ifndef VERSION_array
-#define VERSION_array "0.5.4.0"
-#endif /* VERSION_array */
-#ifndef MIN_VERSION_array
-#define MIN_VERSION_array(major1,major2,minor) (\
-  (major1) <  0 || \
-  (major1) == 0 && (major2) <  5 || \
-  (major1) == 0 && (major2) == 5 && (minor) <= 4)
-#endif /* MIN_VERSION_array */
 /* package base-4.17.2.1 */
 #ifndef VERSION_base
 #define VERSION_base "4.17.2.1"
@@ -30,6 +20,16 @@
   (major1) == 4 && (major2) <  17 || \
   (major1) == 4 && (major2) == 17 && (minor) <= 2)
 #endif /* MIN_VERSION_base */
+/* package binary-0.8.9.1 */
+#ifndef VERSION_binary
+#define VERSION_binary "0.8.9.1"
+#endif /* VERSION_binary */
+#ifndef MIN_VERSION_binary
+#define MIN_VERSION_binary(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  8 || \
+  (major1) == 0 && (major2) == 8 && (minor) <= 9)
+#endif /* MIN_VERSION_binary */
 /* package bytestring-0.11.5.3 */
 #ifndef VERSION_bytestring
 #define VERSION_bytestring "0.11.5.3"
@@ -80,26 +80,6 @@
   (major1) == 0 && (major2) <  20 || \
   (major1) == 0 && (major2) == 20 && (minor) <= 2)
 #endif /* MIN_VERSION_hmatrix */
-/* package random-1.2.1.2 */
-#ifndef VERSION_random
-#define VERSION_random "1.2.1.2"
-#endif /* VERSION_random */
-#ifndef MIN_VERSION_random
-#define MIN_VERSION_random(major1,major2,minor) (\
-  (major1) <  1 || \
-  (major1) == 1 && (major2) <  2 || \
-  (major1) == 1 && (major2) == 2 && (minor) <= 1)
-#endif /* MIN_VERSION_random */
-/* package vector-0.13.1.0 */
-#ifndef VERSION_vector
-#define VERSION_vector "0.13.1.0"
-#endif /* VERSION_vector */
-#ifndef MIN_VERSION_vector
-#define MIN_VERSION_vector(major1,major2,minor) (\
-  (major1) <  0 || \
-  (major1) == 0 && (major2) <  13 || \
-  (major1) == 0 && (major2) == 13 && (minor) <= 1)
-#endif /* MIN_VERSION_vector */
 
 /* tool gcc-15.0.0 */
 #ifndef TOOL_VERSION_gcc

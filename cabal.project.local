@@ -1,0 +1,4 @@
+ignore-project: False
+package *
+  extra-lib-dirs: /opt/homebrew/lib
+  extra-include-dirs: /opt/homebrew/include
