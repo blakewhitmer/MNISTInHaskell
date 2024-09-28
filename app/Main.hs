@@ -37,6 +37,10 @@ main = do
     let b1 = initializeHiddenBias
     let b2 = initializeOutputBias
 
+
+    let beforetrainaccuracy = evaluateNN testDigits w1 w2 b1 b2
+    putStrLn $ "Test Accuracy: " ++ show beforetrainaccuracy ++ "%"
+
     -- Train the neural network
     let epochs = 5
     let (epochLosses, trainedW1, trainedW2, trainedB1, trainedB2) = trainNNEpochs epochs trainDigits w1 w2 b1 b2
@@ -44,6 +48,8 @@ main = do
     -- Print loss information
     mapM_ (\(epoch, losses) -> putStrLn $ "Epoch " ++ show epoch ++ " average loss: " ++ show (average losses)) (zip [1..] epochLosses)
 
+    let accuracy = evaluateNN testDigits trainedW1 trainedW2 trainedB1 trainedB2
+    putStrLn $ "Test Accuracy: " ++ show accuracy ++ "%"
     -- You can now use 'trainDigits' to train your neural network
     
 -- Function to evaluate the neural network on a list of digits
